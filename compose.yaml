@@ -28,7 +28,7 @@ services:
         DB_PASSWORD_ARG: ${DB_PASSWORD_ARG}
         DB_USERNAME_ARG: ${DB_USERNAME_ARG}
         PORT_ARG: ${BACKEND_PORT_ARG}
-        FRONTEND_IP_ARG: frontend
+        FRONTEND_IP_ARG: localhost
         FRONTEND_PORT_ARG: ${FRONTEND_PORT_ARG}
         JWT_SECRET_KEY_ARG: ${JWT_SECRET_KEY_ARG}
     ports:
@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
       args:
         PORT_ARG: ${FRONTEND_PORT_ARG}
-        BACKEND_BASE_URL_ARG: http://backend:${BACKEND_PORT_ARG}
+        BACKEND_BASE_URL_ARG: http://localhost:${BACKEND_PORT_ARG}
     ports:
       - "${FRONTEND_PORT_ARG}:${FRONTEND_PORT_ARG}"
     depends_on:
