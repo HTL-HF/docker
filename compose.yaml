@@ -5,12 +5,11 @@ services:
   mongo:
     image: mongo:6.0
     container_name: mongodb
-    command: mongod --port 27018 && mongosh use mydatabase
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME_ARG}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD_ARG}
     ports:
-      - '27018:27018'
+      - '27017:27017'
     volumes:
       - mongo_data:/data/db
     networks:
@@ -24,7 +23,7 @@ services:
       args:
         LOGGER_LEVEL_ARG: ${LOGGER_LEVEL_ARG}
         DB_IP_ARG: mongo
-        DB_PORT_ARG: 27018
+        DB_PORT_ARG: 27017
         DB_NAME_ARG: ${DB_NAME_ARG}
         DB_PASSWORD_ARG: ${DB_PASSWORD_ARG}
         DB_USERNAME_ARG: ${DB_USERNAME_ARG}
