@@ -1,0 +1,8 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/HTL-HF/backend.git
+	branch = docker
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/HTL-HF/frontend.git
+	branch = docker
