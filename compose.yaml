@@ -5,15 +5,18 @@ services:
   mongo:
     image: mongo:6.0
     container_name: mongodb
+    command: mongod --port 27018 && mongosh use mydatabase
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME_ARG}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD_ARG}
     ports:
-      - '27017:27017'
+      - '27018:27018'
     volumes:
       - mongo_data:/data/db
-
+    networks:
+      - mynetwork
   # Backend service
+  
   backend:
     build:
       context: ./backend
@@ -21,7 +24,7 @@ services:
       args:
         LOGGER_LEVEL_ARG: ${LOGGER_LEVEL_ARG}
         DB_IP_ARG: mongo
-        DB_PORT_ARG: 27017
+        DB_PORT_ARG: 27018
         DB_NAME_ARG: ${DB_NAME_ARG}
         DB_PASSWORD_ARG: ${DB_PASSWORD_ARG}
         DB_USERNAME_ARG: ${DB_USERNAME_ARG}
@@ -29,22 +32,12 @@ services:
         FRONTEND_IP_ARG: frontend
         FRONTEND_PORT_ARG: ${FRONTEND_PORT_ARG}
         JWT_SECRET_KEY_ARG: ${JWT_SECRET_KEY_ARG}
-    environment:
-      LOGGER_LEVEL: ${LOGGER_LEVEL_ARG}
-      DB_IP: mongo
-      DB_PORT: 27017
-      DB_NAME: ${DB_NAME_ARG}
-      DB_PASSWORD: ${DB_PASSWORD_ARG}
-      DB_USERNAME: ${DB_USERNAME_ARG}
-      PORT: ${BACKEND_PORT_ARG}
-      FRONTEND_IP: frontend
-      FRONTEND_PORT: ${FRONTEND_PORT_ARG}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY_ARG}
     ports:
       - "${BACKEND_PORT_ARG}:${BACKEND_PORT_ARG}"
     depends_on:
       - mongo
-
+    networks:
+      - mynetwork
   # Frontend service
   frontend:
     build:
@@ -53,13 +46,14 @@ services:
       args:
         PORT_ARG: ${FRONTEND_PORT_ARG}
         BACKEND_BASE_URL_ARG: http://backend:${BACKEND_PORT_ARG}
-    environment:
-      PORT: ${FRONTEND_PORT_ARG}
-      BACKEND_BASE_URL: http://backend:${BACKEND_PORT_ARG}
     ports:
       - "${FRONTEND_PORT_ARG}:${FRONTEND_PORT_ARG}"
     depends_on:
       - backend
-
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+    driver: bridge
 volumes:
   mongo_data:
