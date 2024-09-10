@@ -30,7 +30,7 @@ services:
       DB_IP: mongodb
       DB_NAME: ${DB_NAME_ARG}
       PORT: ${BACKEND_PORT_ARG}
-      FRONTEND_IP: ${NGINX_IP}
+      FRONTEND_IP: nginx
       FRONTEND_PORT: ${NGINX_PORT}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY_ARG}
 
@@ -64,7 +64,7 @@ services:
     container_name: nginx
     restart: always
     ports:
-      - "80:80"
+      - "${NGINX_PORT}:${NGINX_PORT}"
     volumes:
       - ./nginx:/etc/nginx/conf.d/
     networks:
