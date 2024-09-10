@@ -1,5 +1,9 @@
 version: '3.9'
 
+networks:
+  mynetwork:
+    driver: bridge
+
 services:
   # MongoDB service
   mongo:
@@ -14,8 +18,8 @@ services:
       - mongo_data:/data/db
     networks:
       - mynetwork
+
   # Backend service
-  
   backend:
     container_name: backend
     build:
@@ -29,12 +33,14 @@ services:
         FRONTEND_IP_ARG: ${FRONTEND_IP_ARG}
         FRONTEND_PORT_ARG: ${FRONTEND_PORT_ARG}
         JWT_SECRET_KEY_ARG: ${JWT_SECRET_KEY_ARG}
+    tty: true
     ports:
       - "${BACKEND_PORT_ARG}:${BACKEND_PORT_ARG}"
     depends_on:
       - mongo
     networks:
       - mynetwork
+
   # Frontend service
   frontend:
     container_name: frontend
@@ -45,14 +51,25 @@ services:
         PORT_ARG: ${FRONTEND_PORT_ARG}
         BACKEND_IP_ARG: ${BACKEND_IP_ARG}
         BACKEND_PORT_ARG: ${BACKEND_PORT_ARG}
+    tty: true
     ports:
       - "${FRONTEND_PORT_ARG}:${FRONTEND_PORT_ARG}"
-    depends_on:
-      - backend
     networks:
       - mynetwork
-networks:
-  mynetwork:
-    driver: bridge
+
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes: 
+      - ./nginx:/etc/nginx/conf.d/
+    networks:
+      - mynetwork
+
+
+
 volumes:
   mongo_data:
