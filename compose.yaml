@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 networks:
   mynetwork:
@@ -13,7 +13,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME_ARG}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD_ARG}
     ports:
-      - '27017:27017'
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
@@ -25,14 +25,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      args:
-        LOGGER_LEVEL_ARG: ${LOGGER_LEVEL_ARG}
-        DB_IP_ARG: mongodb
-        DB_NAME_ARG: ${DB_NAME_ARG}
-        PORT_ARG: ${BACKEND_PORT_ARG}
-        FRONTEND_IP_ARG: ${FRONTEND_IP_ARG}
-        FRONTEND_PORT_ARG: ${FRONTEND_PORT_ARG}
-        JWT_SECRET_KEY_ARG: ${JWT_SECRET_KEY_ARG}
+    environment:
+      LOGGER_LEVEL: ${LOGGER_LEVEL_ARG}
+      DB_IP: mongodb
+      DB_NAME: ${DB_NAME_ARG}
+      PORT: ${BACKEND_PORT_ARG}
+      FRONTEND_IP: ${NGINX_IP}
+      FRONTEND_PORT: ${NGINX_PORT}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY_ARG}
+
     tty: true
     ports:
       - "${BACKEND_PORT_ARG}:${BACKEND_PORT_ARG}"
@@ -49,27 +50,25 @@ services:
       dockerfile: Dockerfile
       args:
         PORT_ARG: ${FRONTEND_PORT_ARG}
-        BACKEND_IP_ARG: ${BACKEND_IP_ARG}
-        BACKEND_PORT_ARG: ${BACKEND_PORT_ARG}
+        BACKEND_IP_ARG: ${NGINX_IP}
+        BACKEND_PORT_ARG: ${NGINX_PORT}
+
     tty: true
     ports:
       - "${FRONTEND_PORT_ARG}:${FRONTEND_PORT_ARG}"
     networks:
       - mynetwork
 
-
   nginx:
-    image: nginx:stable-alpine
+    image: nginx
     container_name: nginx
     restart: always
     ports:
       - "80:80"
-    volumes: 
+    volumes:
       - ./nginx:/etc/nginx/conf.d/
     networks:
       - mynetwork
-
-
 
 volumes:
   mongo_data:
