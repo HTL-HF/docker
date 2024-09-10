@@ -17,12 +17,13 @@ services:
   # Backend service
   
   backend:
+    container_name: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
       args:
         LOGGER_LEVEL_ARG: ${LOGGER_LEVEL_ARG}
-        DB_IP_ARG: mongo
+        DB_IP_ARG: mongodb
         DB_NAME_ARG: ${DB_NAME_ARG}
         PORT_ARG: ${BACKEND_PORT_ARG}
         FRONTEND_IP_ARG: ${FRONTEND_IP_ARG}
@@ -36,6 +37,7 @@ services:
       - mynetwork
   # Frontend service
   frontend:
+    container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
