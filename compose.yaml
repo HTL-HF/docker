@@ -10,8 +10,8 @@ services:
     image: mongo:6.0
     container_name: mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME_ARG}
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD_ARG}
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
       - "27017:27017"
     volumes:
@@ -26,17 +26,17 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      LOGGER_LEVEL: ${LOGGER_LEVEL_ARG}
+      LOGGER_LEVEL: ${LOGGER_LEVEL}
       DB_IP: mongodb
-      DB_NAME: ${DB_NAME_ARG}
-      PORT: ${BACKEND_PORT_ARG}
+      DB_NAME: ${DB_NAME}
+      PORT: ${BACKEND_PORT}
       FRONTEND_IP: nginx
       FRONTEND_PORT: ${NGINX_PORT}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY_ARG}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
     tty: true
     ports:
-      - "${BACKEND_PORT_ARG}:${BACKEND_PORT_ARG}"
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     depends_on:
       - mongo
     networks:
@@ -49,13 +49,13 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        PORT_ARG: ${FRONTEND_PORT_ARG}
-        BACKEND_IP_ARG: ${NGINX_IP}
-        BACKEND_PORT_ARG: ${NGINX_PORT}
+        PORT: ${FRONTEND_PORT}
+        BACKEND_IP: ${NGINX_IP}
+        BACKEND_PORT: ${NGINX_PORT}
 
     tty: true
     ports:
-      - "${FRONTEND_PORT_ARG}:${FRONTEND_PORT_ARG}"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     networks:
       - mynetwork
 
