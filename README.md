@@ -40,8 +40,8 @@ Docker makes it easy to run the application with just a few commands. This setup
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/your-repo/fullstack-nginx-docker.git
-    cd fullstack-nginx-docker
+    git clone https://github.com/HTL-HF/docker.git
+    cd docker
     ```
 
 2. **Set up environment variables:**
